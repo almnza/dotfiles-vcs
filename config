@@ -15,6 +15,6 @@ case $1 in
                 $SCRIPT_PATH/untracked
                 ;;
         *)
-                /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@
+                /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME "$@"
                 ;;
 esac
