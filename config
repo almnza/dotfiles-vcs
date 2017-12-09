@@ -1,20 +1,42 @@
 #!/bin/bash
 
-if [ $# -lt 1 ]
-then
+
+################################################################################
+GIT_CMD="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
+
+usage () {
         echo "usage: $0 [cmd]"
         echo "'cmd' can be any git command, or the following: "
         echo "untracked -- lists all untracked dotfiles within " \
              "directories with one ore more tracked files."
+}
+
+untracked () {
+
+    while read LINE
+    do
+            # checks for untracked files in directories
+            [ -d $LINE ] && $GIT_CMD ls-files -o $LINE 
+            
+            # Creates a list of files/directories at the repo root
+    done < <($GIT_CMD ls-files | sed -E 's,/.*$,,' | uniq)
+}
+
+################################################################################
+
+if [ $# -lt 1 ]
+then
+        usage
+        exit 1
 fi
 
-SCRIPT_PATH=$(dirname "$0")
-
-case $1 in
+case "$1" in
         untracked)
-                $SCRIPT_PATH/untracked
+                untracked
                 ;;
         *)
-                /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME "$@"
+                $GIT_CMD "$@"
                 ;;
 esac
+
+exit 0
